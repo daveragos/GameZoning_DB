@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Owner extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
     public function employees() {
         return $this->hasMany(Employee::class);
     }

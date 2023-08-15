@@ -8,12 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Employee extends Model
 {
     use HasFactory;
-    public function owner() {
+
+    protected $fillable = [
+        'owner_id', // Allow mass assignment for owner_id
+        'name',
+        'email',
+        'password',
+    ];
+
+    public function owner()
+    {
         return $this->belongsTo(Owner::class);
     }
 
-    public function incomes() {
+    public function incomes()
+    {
         return $this->hasMany(Income::class);
     }
-
 }

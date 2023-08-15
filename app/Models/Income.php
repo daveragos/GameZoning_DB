@@ -8,6 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Income extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'employee_id',
+        'game_id',
+        'amount',
+        'date',
+    ];
+
+
     public function employee() {
         return $this->belongsTo(Employee::class);
     }

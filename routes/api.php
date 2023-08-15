@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticationController;
+use App\Http\Controllers\OwnerController;
+use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,8 +32,10 @@ Route::get('/tests', function () {
 
 Route::post('register', [AuthenticationController::class,'register']);
 Route::post('login', [AuthenticationController::class,'login']);
-Route::resource('owners', OwnerController::class);
+
+
+
 Route::resource('employees', EmployeeController::class);
 Route::resource('games', GameController::class);
 Route::resource('incomes', IncomeController::class);
-
+Route::resource('owners', OwnerController::class);

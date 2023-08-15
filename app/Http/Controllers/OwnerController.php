@@ -1,4 +1,5 @@
 <?php
+namespace App\Http\Controllers;
 use App\Models\Owner;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,25 +20,27 @@ class OwnerController extends Controller
 
     public function store(Request $request)
     {
-        // Validation logic here
         $data = $request->validate([
-            'name'=> 'required|min:3',
-            'email' => 'required|email|unique:users',
+            'name' => 'required|min:3',
+            'email' => 'required|email|unique:owners',
             'password' => 'required|min:6',
-
         ]);
 
-
         $owner = Owner::create($data);
-        return response()->json(['message' => 'Owner created successfully', 'data' => $owner], 201);
+        return response()->json(['message' => 'Owner created successfully', 'data' => $data], 201);
     }
 
     public function update(Request $request, $id)
     {
-        // Validation logic here
-
         $owner = Owner::findOrFail($id);
-        $owner->update($request->all());
+
+        $data = $request->validate([
+            'name' => 'required|min:3',
+            'email' => 'required|email|unique:owners,email,' . $owner->id,
+            'password' => 'required|min:6',
+        ]);
+
+        $owner->update($data);
         return response()->json(['message' => 'Owner updated successfully', 'data' => $owner]);
     }
 
