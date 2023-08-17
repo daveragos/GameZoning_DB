@@ -2,63 +2,77 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\Models\Income;
 use Illuminate\Http\Request;
 
 class IncomeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $incomes = Income::all();
+        return response()->json(['data' => $incomes]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'game_id' => 'required|exists:games,id',
+            'amount' => 'required|numeric',
+            'date' => 'required|date',
+        ]);
+
+        $income = Income::create([
+            'employee_id' => $request->input('employee_id'),
+            'game_id' => $request->input('game_id'),
+            'amount' => $request->input('amount'),
+            'date' => $request->input('date'),
+        ]);
+
+        return response()->json(['message' => 'Income created successfully', 'data' => $income], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $income = Income::findOrFail($id);
+        return response()->json(['data' => $income]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'employee_id' => 'sometimes|exists:employees,id',
+            'game_id' => 'sometimes|exists:games,id',
+            'amount' => 'sometimes|numeric',
+            'date' => 'sometimes|date',
+        ]);
+
+        $income = Income::findOrFail($id);
+
+        if ($request->has('employee_id')) {
+            $income->employee_id = $request->input('employee_id');
+        }
+        if ($request->has('game_id')) {
+            $income->game_id = $request->input('game_id');
+        }
+        if ($request->has('amount')) {
+            $income->amount = $request->input('amount');
+        }
+        if ($request->has('date')) {
+            $income->date = $request->input('date');
+        }
+
+        $income->save();
+
+        return response()->json(['message' => 'Income updated successfully', 'data' => $income]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id)
     {
-        //
-    }
+        $income = Income::findOrFail($id);
+        $income->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json(['message' => 'Income deleted successfully']);
     }
 }
