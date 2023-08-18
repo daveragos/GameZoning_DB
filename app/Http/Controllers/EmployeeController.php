@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Employee;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -19,21 +20,19 @@ class EmployeeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
- public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
-            'owner_id' => 'required|exists:owners,id',
+            'owner_username' => 'required|exists:owners,username', // Update to use owner_username
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:employees,email',
+            'username' => 'required|unique:employees', // Add username validation
+            'email' => 'required|email|unique:employees',
             'password' => 'required|min:6',
         ]);
 
-        $employee = Employee::create([
-            'owner_id' => $request->input('owner_id'),
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => bcrypt($request->input('password')), // Hash the password
-        ]);
+        $data = $request->all();
+        $data['password'] = bcrypt($data['password']); // Hash the password
+        $employee = Employee::create($data);
 
         return response()->json(['message' => 'Employee created successfully', 'data' => $employee], 201);
     }
@@ -41,9 +40,9 @@ class EmployeeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $employee = Employee::findorFail($id);
+        $employee = Employee::findOrFail($id);
         return response()->json(['data' => $employee]);
     }
 
@@ -53,22 +52,24 @@ class EmployeeController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'owner_id' => 'sometimes|exists:owners,id',
-            'name' => 'sometimes|string|max:255', // Validation rule for name
+            'owner_username' => 'sometimes|exists:owners,username', // Update to use owner_username
+            'name' => 'sometimes|string|max:255',
+            'username' => 'sometimes|unique:employees,username,' . $id, // Add username validation
             'email' => 'sometimes|email|unique:employees,email,' . $id,
-            'password' => 'nullable|min:6', // Allow password to be updated
+            'password' => 'nullable|min:6',
         ]);
 
         $employee = Employee::findOrFail($id);
 
-
-        if ($request->has('owner_id')) {
-            $employee->email = $request->input('owner_id');
+        if ($request->has('owner_username')) {
+            $employee->owner_username = $request->input('owner_username');
         }
         if ($request->has('name')) {
             $employee->name = $request->input('name');
         }
-
+        if ($request->has('username')) {
+            $employee->username = $request->input('username');
+        }
         if ($request->has('email')) {
             $employee->email = $request->input('email');
         }
@@ -80,6 +81,7 @@ class EmployeeController extends Controller
 
         return response()->json(['message' => 'Employee updated successfully', 'data' => $employee]);
     }
+
     /**
      * Remove the specified resource from storage.
      */
@@ -90,5 +92,4 @@ class EmployeeController extends Controller
 
         return response()->json(['message' => 'Employee deleted successfully']);
     }
-
 }
