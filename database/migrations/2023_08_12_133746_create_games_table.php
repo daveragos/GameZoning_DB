@@ -13,7 +13,7 @@ return new class extends Migration
 {
     Schema::create('games', function (Blueprint $table) {
         $table->id();
-        $table->string('name');
+        $table->string('name')->unique(); // Ensure name is unique
         $table->timestamps();
     });
 }

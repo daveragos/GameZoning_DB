@@ -10,18 +10,19 @@ class Income extends Model
     use HasFactory;
 
     protected $fillable = [
-        'employee_id',
-        'game_id',
+        'username',
+        'game_name',
         'amount',
         'date',
     ];
 
-
-    public function employee() {
-        return $this->belongsTo(Employee::class);
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'username', 'username');
     }
 
-    public function game() {
-        return $this->belongsTo(Game::class);
+    public function game()
+    {
+        return $this->belongsTo(Game::class, 'game_name', 'name');
     }
 }

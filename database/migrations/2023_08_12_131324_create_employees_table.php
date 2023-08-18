@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,10 +12,15 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('owner_id')->constrained('owners');
+            $table->string('owner_username'); // New column for the foreign key
             $table->string('name');
+            $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password');
+
+            // Add foreign key constraint
+            $table->foreign('owner_username')->references('username')->on('owners');
+
             $table->timestamps();
         });
     }

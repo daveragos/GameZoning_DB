@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,15 +9,16 @@ class Employee extends Model
     use HasFactory;
 
     protected $fillable = [
-        'owner_id', // Allow mass assignment for owner_id
         'name',
+        'username',
         'email',
         'password',
+        'owner_username', // Include the new column in fillable
     ];
 
     public function owner()
     {
-        return $this->belongsTo(Owner::class);
+        return $this->belongsTo(Owner::class, 'owner_username', 'username');
     }
 
     public function incomes()

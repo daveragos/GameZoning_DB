@@ -13,14 +13,17 @@ return new class extends Migration
     {
         Schema::create('incomes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained('employees');
-            $table->foreignId('game_id')->constrained('games');
+            $table->string('employee_username');
+            $table->string('game_name');
             $table->decimal('amount', 10, 2);
             $table->date('date');
+
+            $table->foreign('employee_username')->references('username')->on('employees');
+            $table->foreign('game_name')->references('name')->on('games');
+
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
