@@ -40,7 +40,14 @@ Route::resource('games', GameController::class);
 Route::resource('incomes', IncomeController::class);
 Route::resource('owners', OwnerController::class);
 
-Route::get('incomes/byEmployee/{employee_username}', [IncomeController::class, 'getByEmployee']);
-Route::get('incomes/byEmployeeAndDate/{employee_username}/{date}', [IncomeController::class, 'getByEmployeeAndDate']);
-Route::get('incomes/byEmployeeAndGame/{employee_username}/{game_name}', [IncomeController::class, 'getByEmployeeAndGame']);
-Route::get('incomes/byEmployeeAndGameAndDate/{employee_username}/{game_name}/{date}', [IncomeController::class, 'getByEmployeeAndGameAndDate']);
+Route::post('incomes/getByEmployee', [IncomeController::class, 'getByEmployee']);
+Route::post('incomes/getByEmployeeAndDate', [IncomeController::class, 'getByEmployeeAndDate']);
+Route::post('incomes/getByEmployeeAndGame', [IncomeController::class, 'getByEmployeeAndGame']);
+Route::post('incomes/getByEmployeeGameAndDate', [IncomeController::class, 'getByEmployeeGameAndDate']);
+
+Route::post('incomes/deleteByEmployee', [IncomeController::class, 'deleteByEmployee']);
+Route::post('incomes/deleteByEmployeeAndDate', [IncomeController::class, 'deleteByEmployeeAndDate']);
+Route::post('incomes/deleteByEmployeeAndGame', [IncomeController::class, 'deleteByEmployeeAndGame']);
+Route::post('incomes/deleteByEmployeeGameAndDate', [IncomeController::class, 'deleteByEmployeeGameAndDate']);
+
+Route::patch('incomes/updateByEmployeeGameAndDate', [IncomeController::class, 'updateByEmployeeGameAndDate']);
