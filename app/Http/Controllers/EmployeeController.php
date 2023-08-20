@@ -5,9 +5,53 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
+    //tokening method
+        //tokening method
+
+        public function generateToken($user) {
+            return $user->createToken('EmployeeToken')->plainTextToken;
+        }
+
+        //employee register method
+        public function register(Request $request) {
+            $data =        $request->validate([
+                'owner_username' => 'required|exists:owners,username', // Update to use owner_username
+                'name' => 'required|string|max:255',
+                'username' => 'required|unique:employees', // Add username validation
+                'email' => 'required|email|unique:employees',
+                'password' => 'required|min:6',
+            ]);
+            $data['password'] = Hash::make($data['password']); // Hash the password
+
+            $employee = Employee::create($data);
+            $token = $this->generateToken($employee);
+
+            return response()->json(['message' => 'Employee registered successfully', 'user' => $employee, 'token' => $token], 201);
+        }
+        //employee login method
+        public function login(Request $request) {
+            $email = $request->input('email');
+            $password = $request->input('password');
+
+            // Check if an employee with the provided email exists
+            $employee = Employee::where('email', $email)->first();
+
+            if ($employee && Hash::check($password, $employee->password)) {
+                // Authentication successful
+                $token = $this->generateToken($employee);
+
+                return response()->json(['message' => 'Login successful', 'user' => $employee, 'token' => $token]);
+            } else {
+                // Invalid credentials
+                return response()->json(['message' => 'Invalid credentials'], 401);
+            }
+        }
+
     /**
      * Display a listing of the resource.
      */

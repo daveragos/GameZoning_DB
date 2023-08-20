@@ -30,10 +30,19 @@ Route::get('/tests', function () {
     ], 200);
 });
 
-Route::post('register', [AuthenticationController::class,'register']);
-Route::post('login', [AuthenticationController::class,'login']);
+Route::post('registerOwner', [AuthenticationController::class,'registerOwner']);
+Route::post('loginOwner', [AuthenticationController::class,'loginOwner']);
+Route::post('registerEmployee', [AuthenticationController::class,'registerEmployee']);
+Route::post('loginEmployee', [AuthenticationController::class,'loginEmployee']);
 
 
+// register and login owner uri
+Route::post('owners/register', [OwnerController::class, 'register']);
+Route::post('owners/login', [OwnerController::class, 'login']);
+
+// register and login owner uri
+Route::post('employees/register', [EmployeeController::class, 'register']);
+Route::post('employees/login', [EmployeeController::class, 'login']);
 
 Route::resource('employees', EmployeeController::class);
 Route::resource('games', GameController::class);

@@ -5,9 +5,53 @@ namespace App\Http\Controllers;
 use App\Models\Owner;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class OwnerController extends Controller
 {
+    //tokening method
+
+    public function generateToken($user) {
+        return $user->createToken('OwnerToken')->plainTextToken;
+    }
+
+    //owner register method
+    public function register(Request $request) {
+        $data = $request->validate([
+            'name' => 'required|max:255',
+            'username' => 'required|unique:owners',
+            'email' => 'required|email|unique:owners',
+            'password' => 'required|min:6',
+        ]);
+
+        $data['password'] = Hash::make($data['password']); // Hash the password
+
+        $owner = Owner::create($data);
+        $token = $this->generateToken($owner);
+
+        return response()->json(['message' => 'Owner registered successfully', 'user' => $owner, 'token' => $token], 201);
+    }
+    //owner login method
+
+    public function login(Request $request) {
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        // Check if an owner with the provided email exists
+        $owner = Owner::where('email', $email)->first();
+
+        if ($owner && Hash::check($password, $owner->password)) {
+            // Authentication successful
+            $token = $this->generateToken($owner);
+
+            return response()->json(['message' => 'Login successful', 'user' => $owner, 'token' => $token]);
+        } else {
+            // Invalid credentials
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+    }
+
     public function index()
     {
         $owners = Owner::all();
@@ -20,6 +64,8 @@ class OwnerController extends Controller
         return response()->json(['data' => $owner]);
     }
 
+
+//registering owner
     public function store(Request $request)
     {
         $data = $request->validate([
