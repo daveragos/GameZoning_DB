@@ -31,7 +31,7 @@ class EmployeeController extends Controller
             $employee = Employee::create($data);
             $token = $this->generateToken($employee);
 
-            return response()->json(['message' => 'Employee registered successfully', 'user' => $employee, 'token' => $token], 201);
+            return response()->json(['message' => 'Employee registered successfully', 'user' => $employee, 'token' => $token, 'label' => 'employee'], 200);
         }
         //employee login method
         public function login(Request $request) {
@@ -45,7 +45,7 @@ class EmployeeController extends Controller
                 // Authentication successful
                 $token = $this->generateToken($employee);
 
-                return response()->json(['message' => 'Login successful', 'user' => $employee, 'token' => $token]);
+                return response()->json(['message' => 'Login successful', 'user' => $employee, 'token' => $token, 'label' => 'employee']);
             } else {
                 // Invalid credentials
                 return response()->json(['message' => 'Invalid credentials'], 401);
@@ -78,7 +78,7 @@ class EmployeeController extends Controller
         $data['password'] = bcrypt($data['password']); // Hash the password
         $employee = Employee::create($data);
 
-        return response()->json(['message' => 'Employee created successfully', 'data' => $employee], 201);
+        return response()->json(['message' => 'Employee created successfully', 'data' => $employee], 200);
     }
 
     /**

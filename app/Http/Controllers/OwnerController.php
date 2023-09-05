@@ -30,7 +30,7 @@ class OwnerController extends Controller
         $owner = Owner::create($data);
         $token = $this->generateToken($owner);
 
-        return response()->json(['message' => 'Owner registered successfully', 'user' => $owner, 'token' => $token], 201);
+        return response()->json(['message' => 'Owner registered successfully', 'user' => $owner, 'token' => $token, 'label' => 'owner'], 200);
     }
     //owner login method
 
@@ -45,7 +45,7 @@ class OwnerController extends Controller
             // Authentication successful
             $token = $this->generateToken($owner);
 
-            return response()->json(['message' => 'Login successful', 'user' => $owner, 'token' => $token]);
+            return response()->json(['message' => 'Login successful', 'user' => $owner, 'token' => $token, 'label' => 'owner']);
         } else {
             // Invalid credentials
             return response()->json(['message' => 'Invalid credentials'], 401);
@@ -78,7 +78,7 @@ class OwnerController extends Controller
         $data['password'] = bcrypt($data['password']); // Hash the password
 
         $owner = Owner::create($data);
-        return response()->json(['message' => 'Owner created successfully', 'data' => $owner], 201);
+        return response()->json(['message' => 'Owner created successfully', 'data' => $owner], 200);
     }
 
     public function update(Request $request, $id)
