@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Income;
 use App\Models\Employee;
 use App\Models\Game;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class IncomeController extends Controller
@@ -19,6 +20,7 @@ class IncomeController extends Controller
         ]);
 
         $incomes = Income::where('employee_username', $request->input('employee_username'))
+        ->orderBy('game_name', 'asc')
             ->get();
 
         return response()->json(['data' => $incomes]);
@@ -34,6 +36,7 @@ class IncomeController extends Controller
 
         $incomes = Income::where('employee_username', $request->input('employee_username'))
             ->where('date', $request->input('date'))
+            ->orderBy('game_name', 'asc')
             ->get();
 
         return response()->json(['data' => $incomes]);
@@ -50,6 +53,7 @@ class IncomeController extends Controller
 
         $incomes = Income::where('employee_username', $request->input('employee_username'))
             ->where('game_name', $request->input('game_name'))
+            ->orderBy('game_name', 'asc')
             ->get();
 
         return response()->json(['data' => $incomes]);
@@ -66,6 +70,7 @@ class IncomeController extends Controller
         $incomes = Income::where('employee_username', $request->input('employee_username'))
             ->where('game_name', $request->input('game_name'))
             ->where('date', $request->input('date'))
+            ->orderBy('game_name', 'asc')
             ->get();
 
         return response()->json(['data' => $incomes]);
@@ -146,6 +151,7 @@ class IncomeController extends Controller
         $income = Income::where('employee_username', $request->input('employee_username'))
             ->where('game_name', $request->input('old_game_name'))
             ->where('date', $request->input('old_date'))
+            ->orderBy('game_name', 'asc')
             ->firstOrFail();
 
         if ($request->has('new_game_name')) {
@@ -164,6 +170,36 @@ class IncomeController extends Controller
         return response()->json(['message' => 'Income updated successfully', 'data' => $income]);
     }
 
+    //todo: Scenario: Get income by employee_username ,date for weekly income
+public function getByEmployeeAndWeeklyDate(Request $request)
+{
+    try {
+        $request->validate([
+            'employee_username' => 'required|exists:employees,username',
+            'date' => 'required|date',
+        ]);
+
+        $date = Carbon::parse($request->input('date'));
+        $startOfWeek = $date->startOfWeek();
+        $endOfWeek = $date->copy()->endOfWeek();
+
+        // Adjust the start of the week to the beginning of the day
+        $startOfWeek->startOfDay();
+        // Adjust the end of the week to the end of the day
+        $endOfWeek->endOfDay();
+
+        $incomes = Income::where('employee_username', $request->input('employee_username'))
+            ->whereBetween('date', [$startOfWeek, $endOfWeek])
+            ->orderBy('game_name', 'asc')
+            ->get();
+
+        return response()->json(['data' => $incomes]);
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Incomes not retrieved successfully', 'data' => $e->getMessage()], 201);
+    }
+}
+
+
     public function index()
     {
         $incomes = Income::all();
@@ -171,23 +207,33 @@ class IncomeController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'employee_username' => 'required|exists:employees,username',
-            'game_name' => 'required|exists:games,name',
-            'amount' => 'required|numeric',
-            'date' => 'required|date',
-        ]);
+{
+    $request->validate([
+        'employee_username' => 'required|exists:employees,username',
+        'game_name' => 'required|exists:games,name',
+        'amount' => 'required|numeric',
+        'date' => 'required|date',
+    ]);
 
+    $income = Income::where([
+        'game_name' => $request->input('game_name'),
+        'date' => $request->input('date'),
+    ])->first();
+
+    if ($income) {
+        $income->amount = $request->input('amount');
+        $income->save();
+    } else {
         $income = Income::create([
             'employee_username' => $request->input('employee_username'),
             'game_name' => $request->input('game_name'),
             'amount' => $request->input('amount'),
             'date' => $request->input('date'),
         ]);
-
-        return response()->json(['message' => 'Income created successfully', 'data' => $income], 201);
     }
+
+    return response()->json(['message' => 'Income created/updated successfully', 'data' => $income], 200);
+}
 
     public function show($id)
     {

@@ -53,6 +53,8 @@ Route::post('incomes/getByEmployee', [IncomeController::class, 'getByEmployee'])
 Route::post('incomes/getByEmployeeAndDate', [IncomeController::class, 'getByEmployeeAndDate']);
 Route::post('incomes/getByEmployeeAndGame', [IncomeController::class, 'getByEmployeeAndGame']);
 Route::post('incomes/getByEmployeeGameAndDate', [IncomeController::class, 'getByEmployeeGameAndDate']);
+Route::post('incomes/getByEmployeeAndWeeklyDate', [IncomeController::class, 'getByEmployeeAndWeeklyDate']);
+
 
 Route::post('incomes/deleteByEmployee', [IncomeController::class, 'deleteByEmployee']);
 Route::post('incomes/deleteByEmployeeAndDate', [IncomeController::class, 'deleteByEmployeeAndDate']);
