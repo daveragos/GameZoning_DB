@@ -190,7 +190,7 @@ public function getByEmployeeAndWeeklyDate(Request $request)
 
         $incomes = Income::where('employee_username', $request->input('employee_username'))
             ->whereBetween('date', [$startOfWeek, $endOfWeek])
-            ->orderBy('date', 'asc')
+            ->orderBy('game_name', 'asc')
             ->get();
 
         return response()->json(['data' => $incomes]);
