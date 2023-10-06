@@ -7,9 +7,27 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Owner;
 
 class EmployeeController extends Controller
 {
+
+
+
+    public function getByOwnerUsername($ownerUsername)
+{
+    // Retrieve the owner's ID using their username
+    $owner = Owner::where('username', $ownerUsername)->first();
+
+    if($owner){
+        
+    }
+    // Retrieve the employees associated with the owner's ID
+    $employees = Employee::where('owner_username', $owner)->get();
+
+    // Return the employees as a JSON response
+    return response()->json(['data' => $employees]);
+}
     //tokening method
         //tokening method
 
