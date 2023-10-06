@@ -14,19 +14,25 @@ class EmployeeController extends Controller
 
 
 
-    public function getByOwnerUsername($ownerUsername)
+    public function getByEmployeesByOwnerUsername($ownerUsername)
 {
     // Retrieve the owner's ID using their username
     $owner = Owner::where('username', $ownerUsername)->first();
 
     if($owner){
-        
-    }
-    // Retrieve the employees associated with the owner's ID
-    $employees = Employee::where('owner_username', $owner)->get();
-
-    // Return the employees as a JSON response
+// Retrieve the employees associated with the owner's ID
+$employees = Employee::where('owner_username', $owner)->get();
+if($employees){
     return response()->json(['data' => $employees]);
+}
+else{
+    return response()->json(['message' => 'Employees not found'], 404);
+    }
+}
+    
+    else{
+        return response()->json(['message' => 'Owner not found'], 404);
+    }
 }
     //tokening method
         //tokening method
