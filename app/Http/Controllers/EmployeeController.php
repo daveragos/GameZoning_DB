@@ -12,27 +12,40 @@ use App\Models\Owner;
 class EmployeeController extends Controller
 {
 
-
-
-    public function getEmployeesByOwnerUsername($request)
-{
-    $data =$request->validate([
-        'owner_username' => 'required|exists:owners,username']);
-    if($data){
-// Retrieve the employees associated with the owner's ID
-$employees = Employee::where('owner_username', $data['owner_username'])->get();
-if($employees){
-    return response()->json(['data' => $employees]);
-}
-else{
-    return response()->json(['message' => 'Employees not found'], 404);
-    }
-}
+    public function getEmployeesByOwnerUsernameFromBody(Request $request)
+    {
+        $ownerUsername = $request->input('owner_username');
     
-    else{
-        return response()->json(['message' => 'Owner not found'], 404);
+        if (empty($ownerUsername)) {
+            return response()->json(['message' => 'Owner username is required in the request body'], 400);
+        }
+    
+        $employees = Employee::where('owner_username', $ownerUsername)->get();
+    
+        if ($employees->isEmpty()) {
+            return response()->json(['message' => 'No employees found for the provided owner_username'], 404);
+        }
+    
+        return response()->json(['data' => $employees], 200);
     }
-}
+    
+
+    public function getEmployeesByOwnerUsername($ownerUsername)
+    {
+        try {
+            $employees = Employee::where('owner_username', $ownerUsername)->get();
+    
+            if ($employees->isEmpty()) {
+                return response()->json(['message' => 'No employees found for the provided owner_username'], 404);
+            }
+    
+            return response()->json(['data' => $employees], 200);
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            return response()->json(['message' => 'Internal Server Error'], 500);
+        }
+    }
+        
     //tokening method
         //tokening method
 

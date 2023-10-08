@@ -44,7 +44,11 @@ Route::post('owners/login', [OwnerController::class, 'login']);
 Route::post('employees/register', [EmployeeController::class, 'register']);
 Route::post('employees/login', [EmployeeController::class, 'login']);
 // getByEmployeesByOwnerUsername
-Route::post('employees/getEmployeesByOwnerUsername', [EmployeeController::class, 'getEmployeesByOwnerUsername']);
+Route::post('/employees/getEmployeesByOwnerUsername', 'EmployeeController@getEmployeesByOwnerUsernameFromBody');
+
+
+Route::get('/employees/{ownerUsername}', 'EmployeeController@getEmployeesByOwnerUsername');
+
 
 Route::resource('employees', EmployeeController::class);
 Route::resource('games', GameController::class);
