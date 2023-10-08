@@ -14,14 +14,13 @@ class EmployeeController extends Controller
 
 
 
-    public function getByEmployeesByOwnerUsername($ownerUsername)
+    public function getEmployeesByOwnerUsername($request)
 {
-    // Retrieve the owner's ID using their username
-    $owner = Owner::where('username', $ownerUsername)->first();
-
-    if($owner){
+    $data =$request->validate([
+        'owner_username' => 'required|exists:owners,username']);
+    if($data){
 // Retrieve the employees associated with the owner's ID
-$employees = Employee::where('owner_username', $owner)->get();
+$employees = Employee::where('owner_username', $data['owner_username'])->get();
 if($employees){
     return response()->json(['data' => $employees]);
 }
