@@ -30,21 +30,21 @@ class EmployeeController extends Controller
     }
     
 
-    public function getEmployeesByOwnerUsername($ownerUsername)
-    {
-        try {
-            $employees = Employee::where('owner_username', $ownerUsername)->get();
+    // public function getEmployeesByOwnerUsername($ownerUsername)
+    // {
+    //     try {
+    //         $employees = Employee::where('owner_username', $ownerUsername)->get();
     
-            if ($employees->isEmpty()) {
-                return response()->json(['message' => 'No employees found for the provided owner_username'], 404);
-            }
+    //         if ($employees->isEmpty()) {
+    //             return response()->json(['message' => 'No employees found for the provided owner_username'], 404);
+    //         }
     
-            return response()->json(['data' => $employees], 200);
-        } catch (\Exception $e) {
-            // Log the error for debugging purposes
-            return response()->json(['message' => 'Internal Server Error'], 500);
-        }
-    }
+    //         return response()->json(['data' => $employees], 200);
+    //     } catch (\Exception $e) {
+    //         // Log the error for debugging purposes
+    //         return response()->json(['message' => 'Internal Server Error'], 500);
+    //     }
+    // }
         
     //tokening method
         //tokening method
@@ -172,4 +172,22 @@ class EmployeeController extends Controller
 
         return response()->json(['message' => 'Employee deleted successfully']);
     }
+
+    public function getEmployeesByOwnerUsername($ownerUsername)
+    {
+        try {
+            $employees = Employee::where('owner_username', $ownerUsername)->get();
+    
+            if ($employees->isEmpty()) {
+                return response()->json(['message' => 'No employees found for the provided owner_username'], 404);
+            }
+    
+            return response()->json(['data' => $employees], 200);
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            return response()->json(['message' => 'Internal Server Error'], 500);
+        }
+    }
+    
+
 }

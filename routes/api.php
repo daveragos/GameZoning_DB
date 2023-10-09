@@ -45,7 +45,7 @@ Route::post('employees/register', [EmployeeController::class, 'register']);
 Route::post('employees/login', [EmployeeController::class, 'login']);
 // getByEmployeesByOwnerUsername
 Route::post('/employees/getEmployeesByOwnerUsername', 'EmployeeController@getEmployeesByOwnerUsernameFromBody');
-
+Route::get('employees/owner/{owner_username}', [EmployeeController::class, 'getEmployeesByOwnerUsername']);
 
 Route::get('/employees/{ownerUsername}', 'EmployeeController@getEmployeesByOwnerUsername');
 
