@@ -74,14 +74,22 @@ class EmployeeController extends Controller
             $email = $request->input('email');
             $password = $request->input('password');
 
+            
             // Check if an employee with the provided email exists
             $employee = Employee::where('email', $email)->first();
-
+            if(!$employee){
+                return response()->json(['message' => 'User Not Found with this email'], 401);
+            }
+            // Check if the password is correct
+            if (!Hash::check($password, $employee->password)) {
+                return response()->json(['message' => 'Wrong Password'], 401);
+            }
+            // Authentication successful
             if ($employee && Hash::check($password, $employee->password)) {
                 // Authentication successful
                 $token = $this->generateToken($employee);
 
-                return response()->json(['message' => 'Login successful', 'user' => $employee, 'token' => $token, 'label' => 'employee']);
+                return response()->json(['message' => 'Login successful', 'user' => $employee, 'token' => $token, 'label' => 'employee'],200);
             } else {
                 // Invalid credentials
                 return response()->json(['message' => 'Invalid credentials'], 401);
