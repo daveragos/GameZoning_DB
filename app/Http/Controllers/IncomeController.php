@@ -216,6 +216,7 @@ public function getByEmployeeAndWeeklyDate(Request $request)
     ]);
 
     $income = Income::where([
+        'employee_username' => $request->input('employee_username'),
         'game_name' => $request->input('game_name'),
         'date' => $request->input('date'),
     ])->first();
