@@ -1,0 +1,22 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up LFTP
+      run: sudo apt-get install lftp
+
+    - name: Deploy to cPanel
+      run: |
+        chmod +x ./deploy.sh
+        ./deploy.sh
